@@ -22,8 +22,8 @@ translateBtn.addEventListener('click', async () => {
     programOutput.innerHTML = "Waiting for simulation...";
 
     try {
-        const response = await fetch('http://localhost:3000/api/translate', {
-            method: "POST",
+const response = await fetch('/api/translate', {
+        method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 prompt: `Act as a senior dev. 1. Debug this ${from} code. 2. Translate to ${to}. 3. Provide predicted console output. Format strictly as: DEBUG: [findings] OUTPUT: [predicted output] CODE: [translated code]. Code: ${code}`
