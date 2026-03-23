@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Code Lab v3.0 - Full Stack</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Code Translator</h1>
+        <p>BSc IT Project: Secure Multi-Language Translator</p>
+    </header>
+
+    <div class="controls">
+        <select id="sourceLang">
+            <option value="C++">C++</option>
+            <option value="Java">Java</option>
+            <option value="Python">Python</option>
+            <option value="JavaScript">JavaScript</option>
+        </select>
+        
+        <i data-lucide="arrow-right" class="divider-icon"></i>
+
+        <select id="targetLang">
+            <option value="Python" selected>Python</option>
+            <option value="C++">C++</option>
+            <option value="Java">Java</option>
+            <option value="JavaScript">JavaScript</option>
+        </select>
+
+        <button id="translateBtn">Translate & Debug</button>
+        
+        <button id="clearBtn" class="icon-btn" title="Clear All">
+            <i data-lucide="trash-2"></i>
+        </button>
+    </div>
+
+    <div class="editor-grid">
+        <div class="editor-container">
+            <div class="label-row"><span>INPUT CODE</span></div>
+            <textarea id="inputCode" placeholder="Paste your code here..."></textarea>
+        </div>
+
+        <div class="editor-container">
+            <div class="label-row">
+                <span>OUTPUT RESULT</span>
+                <button id="copyBtn" class="icon-btn" title="Copy Code">
+                    <i data-lucide="copy" size="16"></i>
+                </button>
+            </div>
+            <textarea id="outputCode" readonly placeholder="Translated code will appear here..."></textarea>
+        </div>
+    </div>
+
+    <div class="system-report">
+        <div id="debugConsole">System ready. Awaiting backend connection...</div>
+        <div class="output-label">EXPECTED CONSOLE OUTPUT:</div>
+        <div id="programOutput">No output to show yet.</div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+<script>lucide.createIcons();</script>
+</body>
+</html>
