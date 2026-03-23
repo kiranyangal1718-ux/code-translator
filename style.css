@@ -13,32 +13,32 @@ body {
     background-color: var(--bg-dark);
     color: var(--text-main);
     margin: 0;
-    padding: 20px;
+    padding: 10px; /* Reduced for mobile */
     line-height: 1.6;
 }
 
 .container {
     max-width: 1100px;
     margin: 0 auto;
+    padding: 10px;
 }
 
 header {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
-header h1 span {
-    color: var(--accent);
-    font-size: 0.8em;
-    vertical-align: top;
+header h1 {
+    font-size: 1.8rem; /* Scalable title */
 }
 
-/* Controls Section */
+/* Controls Section - Now wraps on mobile */
 .controls {
     display: flex;
-    gap: 12px;
+    flex-wrap: wrap; /* Allows items to drop to next line */
+    gap: 10px;
     background: var(--card-bg);
-    padding: 15px 20px;
+    padding: 15px;
     border-radius: 12px;
     margin-bottom: 25px;
     align-items: center;
@@ -49,126 +49,99 @@ header h1 span {
     color: var(--text-dim);
 }
 
-select, button {
-    padding: 10px 15px;
-    border-radius: 8px;
+select {
+    flex: 1; /* Selects grow to fill space */
+    min-width: 120px;
+    padding: 10px;
     background: #0f172a;
     color: white;
     border: 1px solid var(--border);
-    cursor: pointer;
-    font-size: 14px;
-    transition: 0.3s;
-}
-
-select:hover, button:hover {
-    border-color: var(--accent);
+    border-radius: 8px;
 }
 
 #translateBtn {
     background: var(--accent);
+    color: white;
     border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
     font-weight: bold;
-    flex-grow: 1;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    flex-basis: 100%; /* Button takes full width on small screens */
+    order: 4; /* Moves button to bottom of controls on mobile */
+    cursor: pointer;
 }
 
-#translateBtn:hover {
-    background: #2563eb;
-    transform: translateY(-1px);
-}
-
-#translateBtn:disabled {
-    background: #1e293b;
-    cursor: not-allowed;
-}
-
-/* Editor Grid */
+/* Editor Grid - Critical for Responsiveness */
 .editor-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 25px;
+    grid-template-columns: 1fr 1fr; /* Desktop default */
+    gap: 20px;
 }
 
 .editor-container {
     background: var(--card-bg);
-    padding: 18px;
+    padding: 15px;
     border-radius: 15px;
     border: 1px solid var(--border);
 }
 
-.label-row {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 10px;
-    font-size: 12px;
-    font-weight: bold;
-    color: var(--text-dim);
-    letter-spacing: 1px;
-}
-
 textarea {
     width: 100%;
-    height: 400px;
+    height: 300px; /* Adjusted height */
     background: #020617;
     color: var(--success);
     border: 1px solid var(--border);
     border-radius: 10px;
-    padding: 15px;
-    font-family: 'Fira Code', 'Consolas', monospace;
+    padding: 12px;
+    font-family: 'Fira Code', monospace;
     font-size: 14px;
     resize: none;
     box-sizing: border-box;
-    outline: none;
 }
 
-textarea:focus {
-    border-color: var(--accent);
-}
-
-/* System Report / Console */
+/* Console Section */
 .system-report {
-    margin-top: 25px;
+    margin-top: 20px;
     background: #020617;
     border-radius: 12px;
-    padding: 20px;
+    padding: 15px;
     border: 1px solid var(--border);
 }
 
-#debugConsole {
-    color: var(--text-dim);
-    font-size: 14px;
-    margin-bottom: 15px;
-    border-bottom: 1px solid #1e293b;
-    padding-bottom: 12px;
+/* --- MEDIA QUERIES (The Magic) --- */
+
+/* For Tablets (Screens smaller than 900px) */
+@media (max-width: 900px) {
+    .editor-grid {
+        grid-template-columns: 1fr; /* Stack editors vertically */
+    }
+    
+    textarea {
+        height: 250px; /* Slightly shorter for smaller screens */
+    }
 }
 
-.output-label {
-    color: var(--accent);
-    font-size: 11px;
-    font-weight: bold;
-    margin-bottom: 8px;
-}
+/* For Mobile Phones (Screens smaller than 600px) */
+@media (max-width: 600px) {
+    body {
+        padding: 5px;
+    }
 
-#programOutput {
-    font-family: 'Consolas', monospace;
-    color: #e2e8f0;
-    white-space: pre-wrap;
-    background: #0f172a;
-    padding: 10px;
-    border-radius: 5px;
-}
+    .controls {
+        flex-direction: column; /* Stack all controls vertically */
+        align-items: stretch;
+    }
 
-.icon-btn {
-    background: transparent;
-    border: none;
-    color: var(--text-dim);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px;
-}
+    .divider-icon {
+        display: none; /* Hide arrow on mobile to save space */
+    }
 
-.icon-btn:hover {
-    color: white;
+    header h1 {
+        font-size: 1.5rem;
+    }
+    
+    #translateBtn {
+        font-size: 16px;
+        padding: 15px;
+    }
 }
