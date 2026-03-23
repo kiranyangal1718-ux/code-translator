@@ -20,70 +20,47 @@ translateBtn.addEventListener('click', async () => {
     programOutput.innerHTML = "Waiting for simulation...";
 
     try {
-        // ✅ Calling your local Node.js backend instead of Google directly
+        // NOTE: If testing on mobile via GitHub Pages, localhost:3000 won't work 
+        // unless your phone is on the same Wi-Fi and using your PC's IP address.
         const response = await fetch('http://localhost:3000/api/translate', {
             method: "POST",
-            headers: { 
-                "Content-Type": "application/json" 
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                prompt: `Act as a senior dev. 
-                1. Debug this ${from} code. 
-                2. Translate to ${to}. 
-                3. Provide predicted console output.
-                
-                Format strictly as: 
-                DEBUG: [findings]
-                OUTPUT: [predicted output]
-                CODE: [translated code]
-                
-                Code: ${code}`
+                prompt: `Act as a senior dev. 1. Debug this ${from} code. 2. Translate to ${to}. 3. Provide predicted console output. Format strictly as: DEBUG: [findings] OUTPUT: [predicted output] CODE: [translated code]. Code: ${code}`
             })
         });
 
-        // ✅ Check if the local server returned an error
-        if (!response.ok) {
-            throw new Error("Unable to connect");
-        }
+        if (!response.ok) throw new Error("Unable to connect");
 
         const data = await response.json();
-
-        // Safety check for backend or API errors
-        if (data.error) {
-            throw new Error(data.error);
-        }
-
         const result = data.candidates[0].content.parts[0].text;
 
-        // --- SPLITTING LOGIC ---
+        // Splitting logic
         const debugPart = result.split("OUTPUT:")[0].replace("DEBUG:", "").trim();
         const outputPart = result.split("OUTPUT:")[1].split("CODE:")[0].trim();
         const codePart = result.split("CODE:")[1].trim();
 
-        // --- CLEANING LOGIC (Removes Comments & Markdown) ---
+        // Cleaning logic (Removes comments and backticks)
         const cleanCode = codePart
-            .replace(/```[a-z]*\n/g, "")      // Remove opening backticks
-            .replace(/```/g, "")             // Remove closing backticks
-            .replace(/\/\*[\s\S]*?\*\/|([^\\:]|^)\/\/.*|([^\\:]|^)#.*/g, "$1$2") // Remove //, #, and /* */ comments
+            .replace(/```[a-z]*\n/g, "")
+            .replace(/```/g, "")
+            .replace(/\/\*[\s\S]*?\*\/|([^\\:]|^)\/\/.*|([^\\:]|^)\#.*/g, "$1$2")
             .trim();
 
-        // Update the UI with results
         debugConsole.innerHTML = `<b>Debug Report:</b> ${debugPart}`;
         programOutput.innerHTML = outputPart || "Process finished with no output.";
         outputCode.value = cleanCode;
 
     } catch (error) {
-        // ✅ Displays the requested error message if connection fails
         debugConsole.innerHTML = `<span style="color: #f87171;">❌ Unable to connect</span>`;
         programOutput.innerHTML = "Check if your Node.js server is running.";
-        console.error("Detailed Error:", error);
     } finally {
         translateBtn.innerText = "Translate & Debug";
         translateBtn.disabled = false;
     }
 });
 
-// Clear All Feature
+// Clear Feature
 clearBtn.addEventListener('click', () => {
     inputCode.value = "";
     outputCode.value = "";
@@ -91,10 +68,25 @@ clearBtn.addEventListener('click', () => {
     programOutput.innerHTML = "No output to show yet.";
 });
 
-// Copy Feature
-copyBtn.addEventListener('click', () => {
+// ✅ FIX: Modern Copy Feature (No Permission Popups)
+copyBtn.addEventListener('click', async () => {
     if (!outputCode.value) return;
-    outputCode.select();
-    document.execCommand('copy');
-    alert("Code copied to clipboard!");
+
+    try {
+        // Uses the browser's modern Clipboard API
+        await navigator.clipboard.writeText(outputCode.value);
+        
+        // Visual feedback on the button
+        const originalContent = copyBtn.innerHTML;
+        copyBtn.innerHTML = "✅ Copied!";
+        setTimeout(() => {
+            copyBtn.innerHTML = originalContent;
+        }, 2000);
+        
+    } catch (err) {
+        // Fallback for very old browsers if needed
+        outputCode.select();
+        document.execCommand('copy');
+        console.warn("Clipboard API failed, using fallback.");
+    }
 });
